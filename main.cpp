@@ -1,183 +1,116 @@
 #include <iostream>
 
 #include <string>
-
 using namespace std;
 //Class for file allocation table
-//To hold name and index of file 
+//To hold name for file with index list for to acess data
 class FileAllocationTable{ 
     private:
         string name;
-        int index;
-        int indexlist[100];
+        int* indexList;
     public:
-    //Constructor to inialize name and index
+    //Constructor to create new file with name and index list
         FileAllocationTable(){
-            name = "None";
-            index = -1;
-            int i;
-            for(i=0;i<100;i++){
-                indexlist[i]=-1;
-            }
-            cout << "i am constructor here for Fat\n";
+        name = "None";
+        indexList = NULL;
         }
-        //Function to create new file with index
-        void setFileAllocationTable(string name,int index){
-            this->name = name;
-            this->index = index;
-            indexlist[0] = index;
-        }
-        //Function to check does file exists
-        int checkFileInFileAllocationTable(string name){
-            if(this->name==name){
-                return index;
-            }
-            else{
-                return -1;
-            }
-        }
-        //Function return empty index for new file
-        int checkIndex(){
-            if(index==-1){
-                return -1;
-            }
-            else{
+    //Check file name already exists or not
+        int checkFileName(string name){
+               if(this->name=="None"){
                 return 1;
+               }
+               else if(this->name==name){
+                   return -1;
+               }
+               else if(this->name!=name){
+                   return 0;
+               }         
             }
-        }
-        //to store blocks
-        void setindexlist(int blockIndex){
+    //Initialize index list with length of user input text
+        void InitializeIndexList_and_Name(int LenTex,string name){
+            this->name = name;
+            indexList = new int[LenTex];
             int i;
-            for(i=0;i<100;i++){
-                if(indexlist[i]==-1){
-                    indexlist[i]=blockIndex;
-                    break;
-                }
+            for(i=0;i<LenTex;i++){
+                indexList[i]=-1;
             }
+            return;
         }
-        //to check file exists or not
-        int checkFile(string input){
-            if(input==name){
-            cout << "We find your file in our system\n";
-            cout << "Blocks indexes for file is below\n";
-            int i;
-            for(i=0;i<100;i++)
-            {
-                if(indexlist[i]==-1){
-                    return 1;
-                }
-                else{
-                    cout << indexlist[i] << endl;
-                }
-                
-            }
-            return 1;
-            }
-            else{
-                return -1;
-            }
+    //Get file name
+        void get_file_name(){
+            cout << "File name is " << name << endl;
         }
 
 };
 //Class for to store data in file system 
-class data{
+class Data{
     private:
-        int actualData[100];
+        char actualData[100];
+    //Bit map for actual values 
+        int bitMap[100]; 
     public:
-    //Constructor to inialize with defualt value
-        data(){
+    //Constructor to initialize with defualt value
+        Data(){
             int i;
-            cout << "Data is initialize with defualt values\n";
             for(i=0;i<100;i++){
-                actualData[i]=0;
+                actualData[i]='-1';
+                bitMap[i]=-1;
             }
         }
-        int checkIndexIsAvailable(int index){
-            if(actualData[index]==0){
-                actualData[index]=1;
-                return 1;
-            }
-            else{
-                return -1;
-            }
+    //To writing data of file in storage
+        void writing_data(FileAllocationTable object){
+            
+            
         }
+
 
 };
 
 int main(){
-    FileAllocationTable FAT[100];
-    data dataFAT;
-    int input,blocks,index,i,check1,check2,counter;
-    string name;
-    cout << "Well Come to File System\n";
+    int choice,LenTex,i,check,fileNumber;
+    FileAllocationTable Files[100];
+    Data storage;
     while(true){
-        cout << "Enter 1 for create file\n";
-        cout << "Enter 2 for show file data\n";
-        cin >> input;
-        //File Creation
-        if(input==1){
-            cout << "Enter file name\n";
-            cin >> name;
+    cout << "Enter 1 for create file\n";
+    cin >> choice;
+//Method for creation of file
+        if(choice == 1){
+            string name,text;
+            //checking does file name already exists or not
             for(i=0;i<100;i++){
-                //To check index is avaible in data
-                cout << "Index allocation outside\n";
-                check2=dataFAT.checkIndexIsAvailable(i);
-                if(check2==1)
-                {   
-                    cout << "Index allocation inside\n";
-                    cout << check2 << endl;
-                    cout << i << endl;
-                    index=i;
-                    break;
-                }
-                else{   
+                cout << "Enter name for file\n";
+                cin.ignore();
+                getline(cin,name);
+                check=Files[i].checkFileName(name);
+                if(check==-1){
+                    cout << "Enter another file name your input file already exists\n";
+                    fileNumber = i;
+                    cin.ignore();
+                    getline(cin,name);
                     continue;
                 }
-            }
-            cout << "I am here to allocate the index\n";
-            FAT[index].setFileAllocationTable(name,index);
-            cout << "Enter number of blocks for file\n";
-            cin >> blocks;
-            i = 0;
-            counter = 1;
-            while(true){
-                check2=dataFAT.checkIndexIsAvailable(i);
-                if(check2==1){
-                    FAT[index].setindexlist(i);
-                    i++;
-                    counter++;
-                    if(counter==blocks){
-                        break;
-                    }
-                }
-                else{
-                    i++;
-                    if(i==100){
-                    break;
-                    }
-                }
-            }
-            
-
-        }
-        else if(input==2){
-            cout << "Enter your file name\n";
-            cin >> name;
-            for(i=0;i<100;i++){
-                check1=FAT[i].checkFile(name);
-                if(check1==1){
+                else if(check==1){
+                    fileNumber = i;
                     break;
                 }
-                else{
+                else if(check==0){
                     continue;
                 }
+                else if(i==99){
+                    cout << "Our file system have no space for more files\n";
+                    return 1;
+                }
+                cout << i;
             }
-            if(i==100){
-                cout << "File is not found\n";
-            }
+            //File creation with some text data
+            cout << "Enter some text data for file\n";
+            getline(cin,text);
+            LenTex = text.size();
+            //Initialize Index list with length of user input text
+            Files[fileNumber].InitializeIndexList_and_Name(LenTex,name);
+            //Writing data into storage
+            storage.writing_data(Files[fileNumber]);
         }
-
-    }
-
+    }    
     return 0;
 }
