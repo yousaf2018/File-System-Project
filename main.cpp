@@ -64,6 +64,15 @@ class FileAllocationTable{
                 return 0;
             }
         }
+        //Method count number of files
+        int count_files(){
+            if(name=="None"){
+                return 0;
+            }
+            else{
+                return 1;
+            }
+        }
 };
 //Class for to store data in file system 
 class Data{
@@ -130,7 +139,8 @@ class Data{
 };
 
 int main(){
-    int LenTex,i,check,fileNumber,indicator=0;
+    //Variables usded in file system
+    int LenTex,i,check,fileNumber,indicator,counter;
     string name,text,choice;
     FileAllocationTable Files[100];
     Data storage;
@@ -139,9 +149,12 @@ int main(){
     cout << "Enter 2 for search file\n";
     cout << "Enter 3 for display file data\n";
     cout << "Enter 4 for delete file\n";
+    cout << "Enter 5 for to count number of files\n";
+    cout << "Enter 6 to list name of all files\n";
     cin >> choice;
 //Method for creation of file
         if(choice == "1"){
+                indicator = 0;
                 cout << "Enter name for file\n";
                 cin.ignore();
                 getline(cin,name);
@@ -239,6 +252,38 @@ int main(){
                 else if(i==99){
                     cout << "We donot find your file in our system\n";
                 }
+            }
+        }
+        //Method for count number of files
+        else if(choice=="5"){
+            counter = 0;
+            for(i=0;i<100;i++){
+                check=Files[i].count_files();
+                if(check==1){
+                    counter++;
+                }
+                else{
+                    continue;
+                }
+            }
+            cout << "Total number of files are :> " << counter << endl;            
+        }
+        //Method for list all name of files in file system
+        else if(choice=="6"){
+            indicator = 0;
+            for(i=0;i<100;i++){
+                check=Files[i].count_files();
+                if(check==1){
+                    name = Files[i].get_file_name();
+                    cout << name << endl;
+                    indicator = 1;
+                }
+                else{
+                    continue;
+                }
+            }
+            if(indicator==0){
+                cout << "File system is empty\n";
             }
         }
         
