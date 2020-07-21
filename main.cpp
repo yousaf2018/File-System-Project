@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "fstream"
 #include <string>
 using namespace std;
 //Class for file allocation table
@@ -73,6 +73,19 @@ class FileAllocationTable{
                 return 1;
             }
         }
+        //Method to load file
+        void Load_IndexList_and_Name(int LenTex,string name,int *IndextList){
+            this->name = name;
+            lengthIndex = LenTex;
+            indexList = new int[LenTex];
+            indexList = IndextList;
+            int i;
+            cout << "We are here to initialize values\n";
+            cout << LenTex <<endl;
+            for(i=0;i<LenTex;i++){
+                cout << indexList[i] << endl;
+            }
+        }
 };
 //Class for to store data in file system 
 class Data{
@@ -135,12 +148,66 @@ class Data{
         
         cout << "File is deleted sucessfully\n";
     }
+    //Method to store snapshot
+    void storeSnapShot(){
+        ofstream write;
+        int i;
+        write.open("data.txt");
+        for(i=0;i<100;i++){
+            if(actualData[i]==' '){
+                write << "_";
+            }
+            else{
+            write << actualData[i];
+            }
+        }
+        write << "#";
+        write.close();
+        write.open("bitmapt.txt");
+        for(i=0;i<100;i++){
+            write << " " << bitMap[i] << " ";
+        }
+        write.close();
+    }
+    //Method for load data 
+    void load_data(){
+        char reading;
+        int readingInt,i;
+        ifstream read;
+        read.open("data.txt");
+        while(!read.eof()){
+            for(i=0;i<100;i++){ 
+                read >> reading;
+                if(reading=='#'){
+                    break;
+                }
+                else if(reading=='_'){
+                    actualData[i] = ' ';
+                }
+                else{
+                actualData[i] = reading;
+                }
+            }
+        }
+        read.close();
+        read.open("bitmapt.txt");
+            while(!read.eof()){
+            for(i=0;i<100;i++){
+                read >> readingInt;
+                bitMap[i] = readingInt;
+            }
+        }
+        read.close();
+    }
 
 };
 
 int main(){
     //Variables usded in file system
-    int LenTex,i,check,fileNumber,indicator,counter;
+    int LenTex,i,j,check,fileNumber,index,indicator,counter,lenIndexList,*IndextList;
+    ifstream read;
+    ofstream write;
+    char reading,Bracket;
     string name,text,choice;
     FileAllocationTable Files[100];
     Data storage;
@@ -151,6 +218,8 @@ int main(){
     cout << "Enter 4 for delete file\n";
     cout << "Enter 5 for to count number of files\n";
     cout << "Enter 6 to list name of all files\n";
+    cout << "Enter 7 to save file system snapshot\n";
+    cout << "Enter 8 to load snapshot previously stored\n";
     cin >> choice;
 //Method for creation of file
         if(choice == "1"){
@@ -286,6 +355,67 @@ int main(){
                 cout << "File system is empty\n";
             }
         }
+        //Method for to save files permanantly which can be loaded after execution of program
+        else if(choice=="7"){
+        storage.storeSnapShot();
+        write.open("FAT.txt");
+            for(i=0;i<100;i++){
+                check=Files[i].count_files();
+                if(check==1){
+                name = Files[i].get_file_name();
+                write << name << " {";
+                lenIndexList = Files[i].get_list_size();
+                write << " " <<lenIndexList << " "; 
+                IndextList = Files[i].get_list();
+                for(j=0;j<lenIndexList;j++){
+                    write << " " << IndextList[j] << " ";
+                }
+                write << "-1 ";
+                }
+                else {
+                    continue;
+                }
+        }
+        write << "@";
+        write.close();
+        }
+        else if(choice=="8"){
+            read.open("FAT.txt");
+            while(!read.eof()){
+            read >> name;
+            if(name=="@"){
+                read.close();
+                storage.load_data();
+                break;
+            }
+            read >> Bracket;
+            read >> LenTex;
+            int IndexList[LenTex]={0};
+                for(i=0;i<100;i++){
+                check = Files[i].count_files();
+                if(check==0){
+                    for(j=0;j<LenTex;j++){
+                        read >> index;
+                        IndexList[j] = index;
+    
+                    }
+                        read >> index;
+                        if(index==-1){
+                        Files[i].Load_IndexList_and_Name(LenTex,name,IndexList);
+                            break;
+                        }
+                    
+                }
+                        else{
+                              continue;
+                            }
+                }
+
+            }
+
+           
+           }
+
         
     }    
     return 0;
