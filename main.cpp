@@ -78,11 +78,11 @@ class FileAllocationTable{
             this->name = name;
             lengthIndex = LenTex;
             indexList = new int[LenTex];
-            indexList = IndextList;
             int i;
             cout << "We are here to initialize values\n";
             cout << LenTex <<endl;
             for(i=0;i<LenTex;i++){
+                indexList[i] = IndextList[i];
                 cout << indexList[i] << endl;
             }
         }
@@ -419,4 +419,5 @@ int main(){
         
     }    
     return 0;
+    
 }
