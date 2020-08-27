@@ -99,3 +99,15 @@
         }
         read.close();
     }
+
+        //Help to append data in storage 
+    char* Data::help_to_append(FileAllocationTable object){
+        int listLength,*List,i;
+        listLength = object.get_list_size();
+        List = object.get_list();
+        char *text = new char[listLength];
+        for(i=0;i<listLength;i++){
+            text[i] = actualData[List[i]];
+        }
+        return text;
+    }

@@ -21,4 +21,6 @@ class Data{
     void deleteData(FileAllocationTable);
     void storeSnapShot();
     void load_data();
+    char* help_to_append(FileAllocationTable);
+
 };

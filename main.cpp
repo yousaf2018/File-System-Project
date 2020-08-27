@@ -1,6 +1,7 @@
-#include <iostream>
+#include <bits/stdc++.h> 
 #include "fstream"
 #include <string>
+#include <typeinfo>
 using namespace std;
 #include "Storage.h"
 int main(){
@@ -23,6 +24,7 @@ int main(){
     cout << "Enter 8 to load snapshot previously stored\n";
     cout << "Enter 9 for edit file name\n";
     cout << "Enter 10 for overwrite file data\n";
+    cout << "Enter 11 for append file data\n";
     cin >> choice;
 //Method for creation of file
         if(choice == "1"){
@@ -294,6 +296,43 @@ int main(){
             Files[i].InitializeIndexList_and_Name(LenTex,name);
             //Writing data into storage
             storage.writing_data(Files[i],text);
+                }
+                else if(i==99){
+                    cout << "We donot find your file in our system\n";
+                }
+            }
+        }
+
+
+        //Method for append file data
+        else if(choice=="11"){
+            char *Stored;
+            int Length;
+            cout << "Enter file name for append file data\n";
+            cin.ignore();
+            getline(cin,name);
+            for(i=0;i<100;i++){
+                check = Files[i].searchFile(name);
+                if(check==1){
+            Stored = storage.help_to_append(Files[i]);
+            Length = Files[i].get_list_size();
+            char Stored_part[Length];
+            for(i=0;i<Length;i++){
+                Stored_part[i] = *Stored;
+                Stored++;
+            }
+            string New(Stored_part);
+            string Append_text;
+            cout << "Enter some text to append in file\n";
+            cin.ignore();
+            getline(cin,text);
+            New.append(text);
+            cout << New << endl;
+            LenTex = New.size();
+            //Initialize Index list with length of user input text
+            Files[i].InitializeIndexList_and_Name(LenTex,name);
+           // Writing data into storage
+            storage.writing_data(Files[i],New);
                 }
                 else if(i==99){
                     cout << "We donot find your file in our system\n";
