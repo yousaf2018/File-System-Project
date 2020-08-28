@@ -24,4 +24,5 @@ class FileAllocationTable{
         int searchFile(string);
         int count_files(); 
         void Load_IndexList_and_Name(int,string,int*);
+        void deleteList();
 };

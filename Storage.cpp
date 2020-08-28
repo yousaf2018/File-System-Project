@@ -40,13 +40,10 @@
         int listLength,*List,i;
         listLength = object.get_list_size();
         List = object.get_list();
-        object.set_file_name("None");
         for(i=0;i<listLength;i++){
             actualData[List[i]]='@';
             bitMap[List[i]]=-1;
         }
-        
-        cout << "File is deleted sucessfully\n";
     }
     //Method to store snapshot
     void Data::storeSnapShot(){

@@ -316,23 +316,25 @@ int main(){
                 if(check==1){
             Stored = storage.help_to_append(Files[i]);
             Length = Files[i].get_list_size();
-            char Stored_part[Length];
-            for(i=0;i<Length;i++){
-                Stored_part[i] = *Stored;
+            string Stored_part="";
+            for(j=0;j<Length;j++){
+                Stored_part = Stored_part + *Stored;
                 Stored++;
             }
-            string New(Stored_part);
-            string Append_text;
-            cout << "Enter some text to append in file\n";
+            cout << "Enter some text to append in file before your input make sure at least one space\n";
             cin.ignore();
             getline(cin,text);
-            New.append(text);
-            cout << New << endl;
-            LenTex = New.size();
-            //Initialize Index list with length of user input text
+            Stored_part.append(text);
+            cout << Stored_part << endl;
+            LenTex = Stored_part.size();
+            storage.deleteData(Files[i]);
+            Files[i].deleteList();
+            Files[i].set_file_name("None");
+           // Initialize Index list with length of user input text
             Files[i].InitializeIndexList_and_Name(LenTex,name);
-           // Writing data into storage
-            storage.writing_data(Files[i],New);
+          //  Writing data into storage
+            storage.writing_data(Files[i],Stored_part);
+            break;
                 }
                 else if(i==99){
                     cout << "We donot find your file in our system\n";

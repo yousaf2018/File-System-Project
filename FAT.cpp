@@ -73,3 +73,9 @@ using namespace std;
                 cout << indexList[i] << endl;
             }
         }
+        //Method to delete list of indexes
+        void FileAllocationTable::deleteList(){
+            delete [] indexList;
+            indexList = NULL;
+            lengthIndex = -1;
+        }
